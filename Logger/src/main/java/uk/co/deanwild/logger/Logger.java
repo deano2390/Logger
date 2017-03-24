@@ -10,18 +10,31 @@ public class Logger {
     static boolean init = false;
     private static boolean shouldLog;
 
-    public static synchronized void init(boolean enableLogging){
+    public static synchronized void init(boolean enableLogging) {
         shouldLog = enableLogging;
         init = true;
     }
 
-    public static void log(String tag, String log){
+    public static void log(String tag, String log) {
 
-        if(!init)
+        if (!init)
             throw new RuntimeException("Logger not initialized. Call Logger.init() before trying to log");
 
-        if(shouldLog){
+        if (shouldLog) {
             Log.d(tag, log);
+        }
+    }
+
+    public static void printStack(String tag) {
+
+        if (!init)
+            throw new RuntimeException("Logger not initialized. Call Logger.init() before trying to log");
+
+        if (shouldLog) {
+            StackTraceElement[] cause = Thread.currentThread().getStackTrace();
+            for (StackTraceElement ste : cause) {
+                log(tag, ste.toString());
+            }
         }
     }
 }
