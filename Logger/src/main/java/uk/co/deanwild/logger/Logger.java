@@ -2,39 +2,65 @@ package uk.co.deanwild.logger;
 
 import android.util.Log;
 
+import timber.log.Timber;
+
 /**
  * Created by deanwild on 27/05/16.
  */
 public class Logger {
 
-    static boolean init = false;
-    private static boolean shouldLog;
+    static Logger instance;
 
-    public static synchronized void init(boolean enableLogging) {
-        shouldLog = enableLogging;
-        init = true;
+    public static synchronized Logger getInstance() {
+
+        if (instance == null) {
+            instance = new Logger();
+        }
+
+        return instance;
     }
 
+    boolean enableConsoleLogging;
+    boolean enableDiskLogging;
+    String logDirectory;
+
+    public void enableConsoleLogging() {
+        this.enableConsoleLogging = true;
+        Timber.plant(new Timber.DebugTree());
+    }
+
+    public void enableDiskLogging(String logDirectory) {
+        this.enableDiskLogging = true;
+        this.logDirectory = logDirectory;
+        Timber.plant(new FileLoggingTree(logDirectory));
+    }
+
+
     public static void log(String tag, String log) {
+        getInstance().logInternal(tag, log);
+    }
 
-        if (!init)
-            throw new RuntimeException("Logger not initialized. Call Logger.init() before trying to log");
-
-        if (shouldLog) {
-            Log.d(tag, log);
+    void logInternal(String tag, String log) {
+        if (enableConsoleLogging) {
+            Timber.tag(tag);
+            Timber.d(log);
         }
     }
 
     public static void printStack(String tag) {
+        getInstance().printStackInternal(tag);
+    }
 
-        if (!init)
-            throw new RuntimeException("Logger not initialized. Call Logger.init() before trying to log");
-
-        if (shouldLog) {
+    void printStackInternal(String tag){
+        if (enableConsoleLogging) {
             StackTraceElement[] cause = Thread.currentThread().getStackTrace();
             for (StackTraceElement ste : cause) {
-                log(tag, ste.toString());
+                logInternal(tag, ste.toString());
             }
         }
+    }
+
+    public String getLogDirectory() {
+        return logDirectory;
     }
 }
