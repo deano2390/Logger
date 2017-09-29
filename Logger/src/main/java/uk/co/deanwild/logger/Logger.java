@@ -1,7 +1,5 @@
 package uk.co.deanwild.logger;
 
-import android.util.Log;
-
 import timber.log.Timber;
 
 /**
@@ -41,17 +39,15 @@ public class Logger {
     }
 
     void logInternal(String tag, String log) {
-        if (enableConsoleLogging) {
-            Timber.tag(tag);
-            Timber.d(log);
-        }
+        Timber.tag(tag);
+        Timber.d(log);
     }
 
     public static void printStack(String tag) {
         getInstance().printStackInternal(tag);
     }
 
-    void printStackInternal(String tag){
+    void printStackInternal(String tag) {
         if (enableConsoleLogging) {
             StackTraceElement[] cause = Thread.currentThread().getStackTrace();
             for (StackTraceElement ste : cause) {
