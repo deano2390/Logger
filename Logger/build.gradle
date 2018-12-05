@@ -18,6 +18,5 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'com.jakewharton.timber:timber:4.5.1'
-    implementation 'org.slf4j:slf4j-api:1.7.25'
-    implementation 'com.github.tony19:logback-android:1.1.1-11'
+    implementation 'commons-io:commons-io:2.5'
 }

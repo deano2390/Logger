@@ -1,5 +1,9 @@
 package uk.co.deanwild.logger;
 
+import android.content.Context;
+
+import java.io.File;
+
 import timber.log.Timber;
 
 /**
@@ -20,17 +24,17 @@ public class Logger {
 
     boolean enableConsoleLogging;
     boolean enableDiskLogging;
-    String logDirectory;
+    File logDirectory;
 
     public void enableConsoleLogging() {
         this.enableConsoleLogging = true;
         Timber.plant(new Timber.DebugTree());
     }
 
-    public void enableDiskLogging(String logDirectory) {
+    public void enableDiskLogging(Context context, File logDirectory) {
         this.enableDiskLogging = true;
         this.logDirectory = logDirectory;
-        Timber.plant(new FileLoggingTree(logDirectory));
+        Timber.plant(new CustomFileLoggingTree(context, logDirectory));
     }
 
 
@@ -56,7 +60,7 @@ public class Logger {
         }
     }
 
-    public String getLogDirectory() {
+    public File getLogDirectory() {
         return logDirectory;
     }
 }
